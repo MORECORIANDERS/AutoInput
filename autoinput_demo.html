@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>自动填表演示 - 旅游偏好调查</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: #2c7da0;
+            color: white;
+            padding: 15px 25px;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+        .form-panel {
+            padding: 20px 25px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        td, th {
+            border: 1px solid #d0d7de;
+            padding: 10px 12px;
+            vertical-align: top;
+        }
+        .label {
+            background-color: #f8f9fa;
+            font-weight: 500;
+            width: 120px;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        input[type="radio"], input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        .radio-group label {
+            margin-right: 15px;
+            font-weight: normal;
+        }
+        .btn-submit {
+            background-color: #2c7da0;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover {
+            background-color: #1f5e7a;
+        }
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            font-size: 13px;
+            color: #6c757d;
+        }
+        .note {
+            background: #e9ecef;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+        .inline-input {
+            display: inline-block;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">🎯 智能问卷助手 · 自动填表演示</div>
+    <div class="form-panel">
+        <form id="demoForm" onsubmit="alert('表单已提交（演示）'); return false;">
+            <table>
+                <!-- 第一行：筛选条件（演示用） -->
+                <tr>
+                    <td class="label">行程距离：</td>
+                    <td>
+                        <label><input type="radio" name="tripDistance" value="short"> 6小时以内</label>
+                        <label><input type="radio" name="tripDistance" value="long" checked> 6小时以上</label>
+                    </td>
+                    <td class="label">交通方式：</td>
+                    <td>
+                        <label><input type="radio" name="transport" value="car"> 自驾</label>
+                        <label><input type="radio" name="transport" value="train" checked> 火车/高铁</label>
+                    </td>
+                    <td class="label">参与过调查：</td>
+                    <td>
+                        <label><input type="radio" name="previousSurvey" value="yes"> 是</label>
+                        <label><input type="radio" name="previousSurvey" value="no" checked> 否</label>
+                    </td>
+                </tr>
+                <!-- 常居地（省市区联动） -->
+                <tr>
+                    <td class="label">家乡：</td>
+                    <td colspan="5">
+                        <select id="province" style="width: 110px;">
+                            <option value="">选择省份</option>
+                            <option value="110000">北京市</option>
+                            <option value="120000">天津市</option>
+                            <option value="130000">河北省</option>
+                            <option value="140000">山西省</option>
+                            <option value="210000">辽宁省</option>
+                            <option value="310000">上海市</option>
+                            <option value="320000">江苏省</option>
+                            <option value="330000">浙江省</option>
+                            <option value="440000">广东省</option>
+                            <option value="510000">四川省</option>
+                        </select>
+                        <select id="city" style="width: 110px;">
+                            <option value="">选择城市</option>
+                        </select>
+                        <select id="district" style="width: 110px;">
+                            <option value="">选择区县</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- 基本信息 -->
+                <tr>
+                    <td class="label">称呼：</td>
+                    <td>
+                        <label><input type="radio" name="gender" value="M"> 先生</label>
+                        <label><input type="radio" name="gender" value="F"> 女士</label>
+                    </td>
+                    <td class="label">年龄段：</td>
+                    <td>
+                        <select id="ageGroup" name="ageGroup">
+                            <option value="">请选择</option>
+                            <option value="young">18-30岁</option>
+                            <option value="mid">31-45岁</option>
+                            <option value="senior">46-60岁</option>
+                        </select>
+                    </td>
+                    <td class="label">出行目的：</td>
+                    <td>
+                        <select id="travelPurpose" name="travelPurpose">
+                            <option value="">请选择</option>
+                            <option value="leisure">休闲度假</option>
+                            <option value="business">商务出差</option>
+                            <option value="visit">探亲访友</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- 过夜与住宿 -->
+                <tr>
+                    <td class="label">是否过夜：</td>
+                    <td>
+                        <label><input type="radio" name="overnight" value="yes"> 是</label>
+                        <label><input type="radio" name="overnight" value="no" checked> 否</label>
+                    </td>
+                    <td class="label">过夜天数：</td>
+                    <td>
+                        <input type="number" id="nights" name="nights" value="0" min="0" step="1">
+                    </td>
+                    <td class="label">主要住宿类型：</td>
+                    <td>
+                        <select id="accommodation" name="accommodation">
+                            <option value="">请选择</option>
+                            <option value="hotel">酒店/宾馆</option>
+                            <option value="b&b">民宿/客栈</option>
+                            <option value="friend">亲友家</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- 费用部分（自动合计演示） -->
+                <tr>
+                    <td colspan="6" style="background:#f9f9f9; font-weight:bold;">💰 费用明细（单位：元）</td>
+                </tr>
+                <tr>
+                    <td class="label">餐饮费：</td>
+                    <td><input type="number" id="foodExpense" value="0" min="0"></td>
+                    <td class="label">住宿费：</td>
+                    <td><input type="number" id="lodgingExpense" value="0" min="0"></td>
+                    <td class="label">门票/娱乐：</td>
+                    <td><input type="number" id="ticketExpense" value="0" min="0"></td>
+                </tr>
+                <tr>
+                    <td class="label">购物费：</td>
+                    <td><input type="number" id="shoppingExpense" value="0" min="0"></td>
+                    <td class="label">市内交通：</td>
+                    <td><input type="number" id="localTransport" value="0" min="0"></td>
+                    <td class="label">其他费用：</td>
+                    <td><input type="number" id="otherExpense" value="0" min="0"></td>
+                </tr>
+                <tr>
+                    <td class="label">同行人数：</td>
+                    <td><input type="number" id="travelers" value="1" min="1"></td>
+                    <td class="label">总花费（自动）：</td>
+                    <td colspan="3"><input type="text" id="totalCost" readonly style="background:#e9ecef;"></td>
+                </tr>
+                <!-- 游览信息 -->
+                <tr>
+                    <td class="label">游览城市数：</td>
+                    <td><input type="number" id="cityCount" value="1" min="0" max="3"></td>
+                    <td class="label">游览城市：</td>
+                    <td colspan="3">
+                        <select id="visitedCity1">
+                            <option value="">选择城市</option>
+                            <option value="北京">北京</option>
+                            <option value="上海">上海</option>
+                            <option value="广州">广州</option>
+                            <option value="深圳">深圳</option>
+                            <option value="杭州">杭州</option>
+                        </select>
+                        <select id="visitedCity2" style="margin-left:10px;">
+                            <option value="">选择城市</option>
+                            <option value="北京">北京</option>
+                            <option value="上海">上海</option>
+                            <option value="广州">广州</option>
+                            <option value="深圳">深圳</option>
+                            <option value="杭州">杭州</option>
+                        </select>
+                    </td>
+                </tr>
+                <!-- 调查信息 -->
+                <tr>
+                    <td class="label">调查时间：</td>
+                    <td><input type="text" id="surveyTime" placeholder="自动获取当前时间"></td>
+                    <td class="label">调查时长(分钟)：</td>
+                    <td><input type="number" id="duration" value="0"></td>
+                    <td class="label">调查区域：</td>
+                    <td>
+                        <select id="surveyRegion">
+                            <option value="">请选择</option>
+                            <option value="东城区">东城区</option>
+                            <option value="西城区">西城区</option>
+                            <option value="朝阳区">朝阳区</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">调查地点：</td>
+                    <td colspan="3">
+                        <select id="surveyLocation">
+                            <option value="">请选择地点</option>
+                            <option value="科技馆">科技馆</option>
+                            <option value="博物馆">博物馆</option>
+                            <option value="公园">城市公园</option>
+                        </select>
+                    </td>
+                    <td class="label">调查员：</td>
+                    <td><input type="text" id="investigator" placeholder="调查员姓名"></td>
+                </tr>
+                <tr>
+                    <td class="label">联系电话：</td>
+                    <td colspan="5"><input type="text" id="contactPhone" placeholder="联系电话"></td>
+                </tr>
+            </table>
+
+            <div style="text-align:center; margin-top:20px;">
+                <button type="submit" class="btn-submit" id="submitBtn">📋 提交问卷（演示）</button>
+            </div>
+        </form>
+
+        <div class="note">
+            💡 提示：此页面专为自动填表演示设计。您可以使用 Selenium 脚本自动填充并点击提交。表单字段的 <code>id</code> 已设为可识别，方便脚本定位。
+        </div>
+    </div>
+    <div class="footer">
+        🤖 AI 自动填表技术演示 | 字段已做脱敏处理，仅用于教学
+    </div>
+</div>
+
+<script>
+    // 省市区简单联动（演示用）
+    const cityMap = {
+        "110000": [{name:"北京市", code:"110100"}],
+        "120000": [{name:"天津市", code:"120100"}],
+        "130000": [{name:"石家庄市", code:"130100"},{name:"保定市", code:"130600"}],
+        "140000": [{name:"太原市", code:"140100"}],
+        "210000": [{name:"沈阳市", code:"210100"}],
+        "310000": [{name:"上海市", code:"310100"}],
+        "320000": [{name:"南京市", code:"320100"},{name:"苏州市", code:"320500"}],
+        "330000": [{name:"杭州市", code:"330100"}],
+        "440000": [{name:"广州市", code:"440100"},{name:"深圳市", code:"440300"}],
+        "510000": [{name:"成都市", code:"510100"}]
+    };
+    const districtMap = {
+        "130100": [{name:"长安区"},{name:"桥西区"}],
+        "130600": [{name:"竞秀区"},{name:"莲池区"}],
+        "140100": [{name:"小店区"},{name:"迎泽区"}],
+        "210100": [{name:"和平区"},{name:"沈河区"}],
+        "310100": [{name:"黄浦区"},{name:"浦东新区"}],
+        "320100": [{name:"玄武区"},{name:"秦淮区"}],
+        "320500": [{name:"姑苏区"},{name:"虎丘区"}],
+        "330100": [{name:"上城区"},{name:"西湖区"}],
+        "440100": [{name:"越秀区"},{name:"天河区"}],
+        "440300": [{name:"福田区"},{name:"南山区"}],
+        "510100": [{name:"武侯区"},{name:"青羊区"}]
+    };
+
+    const provinceSelect = document.getElementById('province');
+    const citySelect = document.getElementById('city');
+    const districtSelect = document.getElementById('district');
+
+    provinceSelect.addEventListener('change', function() {
+        const provinceCode = this.value;
+        citySelect.innerHTML = '<option value="">选择城市</option>';
+        districtSelect.innerHTML = '<option value="">选择区县</option>';
+        if (provinceCode && cityMap[provinceCode]) {
+            cityMap[provinceCode].forEach(city => {
+                const opt = document.createElement('option');
+                opt.value = city.code;
+                opt.textContent = city.name;
+                citySelect.appendChild(opt);
+            });
+        }
+    });
+
+    citySelect.addEventListener('change', function() {
+        const cityCode = this.value;
+        districtSelect.innerHTML = '<option value="">选择区县</option>';
+        if (cityCode && districtMap[cityCode]) {
+            districtMap[cityCode].forEach(district => {
+                const opt = document.createElement('option');
+                opt.value = district.name;
+                opt.textContent = district.name;
+                districtSelect.appendChild(opt);
+            });
+        }
+    });
+
+    // 自动合计总花费
+    function updateTotal() {
+        const food = parseFloat(document.getElementById('foodExpense').value) || 0;
+        const lodging = parseFloat(document.getElementById('lodgingExpense').value) || 0;
+        const ticket = parseFloat(document.getElementById('ticketExpense').value) || 0;
+        const shopping = parseFloat(document.getElementById('shoppingExpense').value) || 0;
+        const transport = parseFloat(document.getElementById('localTransport').value) || 0;
+        const other = parseFloat(document.getElementById('otherExpense').value) || 0;
+        const total = food + lodging + ticket + shopping + transport + other;
+        document.getElementById('totalCost').value = total;
+    }
+    const expenseIds = ['foodExpense','lodgingExpense','ticketExpense','shoppingExpense','localTransport','otherExpense'];
+    expenseIds.forEach(id => {
+        document.getElementById(id).addEventListener('input', updateTotal);
+    });
+    updateTotal();
+
+    // 自动填充当前时间
+    const now = new Date();
+    const formatted = now.toISOString().slice(0,16).replace('T',' ');
+    document.getElementById('surveyTime').value = formatted;
+</script>
+</body>
+</html>
